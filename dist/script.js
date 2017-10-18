@@ -3,10 +3,12 @@
 (() => {
     $(document).ready(() => {
         //Load the JSON
+        let container = document.body;
+
         $.getJSON('data/imdb1k.json', (data) => {
 
             //Variable declaration
-            let graphGenerator, graph, layout, graphics, renderer;
+            let graphGenerator, graph, layout, graphics, renderer, domLabels;
 
             graphGenerator = Viva.Graph.generator();
             graph = Viva.Graph.graph();
@@ -15,8 +17,20 @@
             data.nodes.forEach((node) => graph.addNode(node.id, {name: node.name, type: node.type}));
             //Add edges to graph
             data.edges.forEach((edge) => graph.addLink(edge.source, edge.target, edge.value));
-            console.log(data.nodes.length, data.edges.length);
+
             graphics = Viva.Graph.View.webglGraphics();
+            domLabels = generateDOMLabels(graph);
+
+            graphics.placeNode((ui, pos) => {
+                let domPos = {x: pos.x, y: pos.y};
+
+                graphics.transformGraphToClientCoordinates(domPos);
+
+                let nodeId = ui.node.id;
+                let labelStyle = domLabels[nodeId].style;
+                labelStyle.left = domPos.x + 'px';
+                labelStyle.top = domPos.y + 'px';
+            });
 
             graphics.node((node) => {
                 let nodeColor = node.data.type === 'feature' ? '#7836CF' : '#BF0A0A';
@@ -38,8 +52,21 @@
             });
 
             renderer.run();
+
+            function generateDOMLabels(graph) {
+                // this will map node id into DOM element
+                let labels = Object.create(null);
+                graph.forEachNode(function(node) {
+                    let label = document.createElement('span');
+                    label.classList.add('node-label');
+                    label.innerText = node.data.name;
+                    labels[node.id] = label;
+                    container.appendChild(label);
+                });
+                // NOTE: If your graph changes over time you will need to
+                // monitor graph changes and update DOM elements accordingly
+                return labels;
+            }
         });
     });
-
-
 })();
