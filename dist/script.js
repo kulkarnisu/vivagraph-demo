@@ -4,10 +4,10 @@
     $(document).ready(() => {
         //Load the JSON
         $.getJSON('data/imdb1k.json', (data) => {
-            
+
             //Variable declaration
             let graphGenerator, graph, layout, graphics, renderer;
-            
+
             graphGenerator = Viva.Graph.generator();
             graph = Viva.Graph.graph();
 
@@ -18,11 +18,17 @@
             console.log(data.nodes.length, data.edges.length);
             graphics = Viva.Graph.View.webglGraphics();
 
+            graphics.node((node) => {
+                let nodeColor = node.data.type === 'feature' ? '#7836CF' : '#BF0A0A';
+                return  Viva.Graph.View.webglSquare(10, nodeColor);
+            });
+
             layout = Viva.Graph.Layout.forceDirected(graph, {
-                springLength : 30,
-                springCoeff : 0.0001,
-                dragCoeff : 0.009,
-                gravity : -1.2
+                springLength: 30,
+                springCoeff: 0.000009,
+                dragCoeff: 0.003,
+                gravity: -1.2,
+                theta: 0.8
             });
 
             renderer = Viva.Graph.View.renderer(graph, {
@@ -30,10 +36,10 @@
                 layout,
                 renderLinks: true
             });
-            
+
             renderer.run();
         });
-    }); 
-    
-    
+    });
+
+
 })();
