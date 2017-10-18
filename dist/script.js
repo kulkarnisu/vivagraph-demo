@@ -42,8 +42,8 @@
             layout = Viva.Graph.Layout.forceDirected(graph, {
                 springLength: 30,
                 springCoeff: 0.000009,
-                dragCoeff: 0.008,
-                gravity: -1.2,
+                dragCoeff: 0.006,
+                gravity: -0.7,
                 theta: 0.8
             });
 
