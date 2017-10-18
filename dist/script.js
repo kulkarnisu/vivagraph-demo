@@ -27,9 +27,11 @@
                 graphics.transformGraphToClientCoordinates(domPos);
 
                 let nodeId = ui.node.id;
-                let labelStyle = domLabels[nodeId].style;
-                labelStyle.left = domPos.x + 'px';
-                labelStyle.top = domPos.y + 'px';
+                if (domLabels[nodeId]){
+                    let labelStyle = domLabels[nodeId].style;
+                    labelStyle.left = domPos.x + 'px';
+                    labelStyle.top = domPos.y + 'px';
+                }
             });
 
             graphics.node((node) => {
@@ -40,7 +42,7 @@
             layout = Viva.Graph.Layout.forceDirected(graph, {
                 springLength: 30,
                 springCoeff: 0.000009,
-                dragCoeff: 0.003,
+                dragCoeff: 0.008,
                 gravity: -1.2,
                 theta: 0.8
             });
@@ -57,11 +59,13 @@
                 // this will map node id into DOM element
                 let labels = Object.create(null);
                 graph.forEachNode(function(node) {
-                    let label = document.createElement('span');
-                    label.classList.add('node-label');
-                    label.innerText = node.data.name;
-                    labels[node.id] = label;
-                    container.appendChild(label);
+                    if(node.data.type === 'label'){
+                        let label = document.createElement('span');
+                        label.classList.add('node-label');
+                        label.innerText = node.data.name;
+                        labels[node.id] = label;
+                        container.appendChild(label);
+                    }
                 });
                 // NOTE: If your graph changes over time you will need to
                 // monitor graph changes and update DOM elements accordingly
