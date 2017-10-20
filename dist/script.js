@@ -18,26 +18,48 @@
             //Add edges to graph
             data.edges.forEach((edge) => graph.addLink(edge.source, edge.target, edge.value));
 
-            graphics = Viva.Graph.View.webglGraphics();
-            domLabels = generateDOMLabels(graph);
+            graphics = Viva.Graph.View.svgGraphics();
+            //domLabels = generateDOMLabels(graph);
 
-            graphics.placeNode((ui, pos) => {
-                let domPos = {x: pos.x, y: pos.y};
-
-                graphics.transformGraphToClientCoordinates(domPos);
-
-                let nodeId = ui.node.id;
-                if (domLabels[nodeId]){
-                    let labelStyle = domLabels[nodeId].style;
-                    labelStyle.left = domPos.x + 'px';
-                    labelStyle.top = domPos.y + 'px';
-                }
-            });
+            let highlightRelatedNodes = function(nodeId, isOn) {
+                // just enumerate all realted nodes and update link color:
+                graph.forEachLinkedNode(nodeId, function(node, link){
+                    let linkUI = graphics.getLinkUI(link.id);
+                    if (linkUI) {
+                        // linkUI is a UI object created by graphics below
+                        linkUI.attr('stroke', isOn ? 'red' : 'gray');
+                    }
+                });
+            };
 
             graphics.node((node) => {
-                let nodeColor = node.data.type === 'feature' ? '#7836CF' : '#BF0A0A';
-                return  Viva.Graph.View.webglSquare(10, nodeColor);
+                let ui = Viva.Graph.svg('g'),
+                    svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.name);
+
+                ui.append(svgText);
+                $(ui).hover(function() { // mouse over
+                    highlightRelatedNodes(node.id, true);
+                }, function() { // mouse out
+                    highlightRelatedNodes(node.id, false);
+                });
+
+                return ui;
+            }).placeNode((nodeUI, pos) => {
+                nodeUI.attr('transform',
+                    'translate(' +
+                    (pos.x - 16) + ',' + (pos.y - 16) +
+                    ')');
             });
+
+            graphics.link(function(link){
+                return Viva.Graph.svg('path')
+                    .attr('stroke', 'gray');
+            }).placeLink(function(linkUI, fromPos, toPos) {
+                let data = 'M' + fromPos.x + ',' + fromPos.y +
+                    'L' + toPos.x + ',' + toPos.y;
+                linkUI.attr("d", data);
+            })
+
 
             layout = Viva.Graph.Layout.forceDirected(graph, {
                 springLength: 30,
@@ -58,8 +80,8 @@
             function generateDOMLabels(graph) {
                 // this will map node id into DOM element
                 let labels = Object.create(null);
-                graph.forEachNode(function(node) {
-                    if(node.data.type === 'label'){
+                graph.forEachNode(function (node) {
+                    if (node.data.type === 'label') {
                         let label = document.createElement('span');
                         label.classList.add('node-label');
                         label.innerText = node.data.name;
