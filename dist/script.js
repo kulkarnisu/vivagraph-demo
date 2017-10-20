@@ -12,6 +12,7 @@
 
             graphGenerator = Viva.Graph.generator();
             graph = Viva.Graph.graph();
+            // graph = graphGenerator.grid(1000, 1000);
 
             //Add nodes to graph
             data.nodes.forEach((node) => graph.addNode(node.id, {name: node.name, type: node.type}));
@@ -36,24 +37,35 @@
 
             graphics.node((node) => {
                 let nodeColor = node.data.type === 'feature' ? '#7836CF' : '#BF0A0A';
-                return  Viva.Graph.View.webglSquare(10, nodeColor);
+                let nodeSize = node.data.type === 'label' ? 50 : 10;
+                return  Viva.Graph.View.webglSquare(nodeSize, nodeColor);
             });
 
             layout = Viva.Graph.Layout.forceDirected(graph, {
                 springLength: 30,
-                springCoeff: 0.000009,
+                springCoeff: 0.000001,
                 dragCoeff: 0.006,
-                gravity: -0.7,
+                gravity: -2.2,
                 theta: 0.8
+                // stableThreshold: 0
             });
 
             renderer = Viva.Graph.View.renderer(graph, {
                 graphics,
                 layout,
-                renderLinks: true
+                renderLinks: true,
+                prerender  : true
             });
 
             renderer.run();
+
+            // listen to events
+            var events = Viva.Graph.webglInputEvents(graphics, graph);
+            events.mouseEnter(function (node) {
+                    console.log('Mouse entered node: ' + node.data.name);
+            }).click(function (node) {
+                console.log('Single click on node: ' + node.data.name);
+            });
 
             function generateDOMLabels(graph) {
                 // this will map node id into DOM element
