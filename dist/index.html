@@ -13,18 +13,32 @@
         position: absolute;
         margin:0;
         overflow: hidden;
+        z-index: 0;
     }
 
     .node-label {
         position: absolute;
         pointer-events: none;
         color: black;
-        z-index: 10;
+        z-index: 1;
+    }
+
+    .button {
+        cursor: pointer;
+        color: black;
+    }
+
+    .form {
+        color: black;
     }
 </style>
 <body>
-<div class="data">
-    
+<div class="data" style="color: white; z-index:2; margin: 10px; position: absolute;">
+    <span class='button zoom in'>Zoom In</span> | <span class='button zoom out'>Zoom Out</span> <br />
+    <span class='button reset'>Reset</span>
+    <form id='centerForm', class="form">
+        Center on node: <input type='text' id='nodeid'/><input type='submit' value='center'/>
+    </form>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vivagraphjs/0.10.0/vivagraph.js"></script>
 <script

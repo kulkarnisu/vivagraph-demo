@@ -43,9 +43,9 @@
 
             layout = Viva.Graph.Layout.forceDirected(graph, {
                 springLength: 30,
-                springCoeff: 0.000001,
+                springCoeff: 0.00001,
                 dragCoeff: 0.006,
-                gravity: -2.2,
+                gravity: -1.2,
                 theta: 0.8
                 // stableThreshold: 0
             });
@@ -58,13 +58,46 @@
             });
 
             renderer.run();
+            var graphics1 = renderer.getGraphics();
+            $('.zoom').click(function (e) {
+                e.preventDefault();
+                if ($(this).hasClass('in')) {
+                    renderer.zoomIn();
+                } else {
+                    renderer.zoomOut();
+                }
+            });
+
+            $('#centerForm').submit(function(e) {
+                e.preventDefault();
+                var nodeId = $('#nodeid').val();
+                if (graph.getNode(nodeId)) {
+                    var pos = layout.getNodePosition(nodeId);
+                    renderer.moveTo(pos.x, pos.y);
+                    highlightNode(nodeId);
+                }
+            });
+
+            $('.reset').click(function () {
+                renderer.reset()
+            });
+
+            var prevSelected;
+            function highlightNode(nodeId) {
+                var ui = graphics.getNodeUI(nodeId);
+                if (prevSelected) {
+                    prevSelected.attr('fill', '#BF0A0A')
+                }
+                prevSelected = ui;
+                ui.attr('fill', 'orange');
+            }
 
             // listen to events
             var events = Viva.Graph.webglInputEvents(graphics, graph);
             events.mouseEnter(function (node) {
-                    console.log('Mouse entered node: ' + node.data.name);
+                    console.log('Mouse entered node: ' + node.id);
             }).click(function (node) {
-                console.log('Single click on node: ' + node.data.name);
+                console.log('Single click on node: ' + node.id);
             });
 
             function generateDOMLabels(graph) {
