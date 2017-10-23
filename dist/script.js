@@ -26,7 +26,7 @@
                 graph.forEachLinkedNode(nodeId, function(node, link){
                     let linkUI = graphics.getLinkUI(link.id);
                     if (linkUI) {
-                        // linkUI is a UI object created by graphics below
+                        // linkUI is a UI object created by graphgics below
                         linkUI.attr('stroke', isOn ? 'red' : 'gray');
                     }
                 });
