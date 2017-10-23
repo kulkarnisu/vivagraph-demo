@@ -16,7 +16,11 @@
             //Add nodes to graph
             data.nodes.forEach((node) => graph.addNode(node.id, {name: node.name, type: node.type}));
             //Add edges to graph
-            data.edges.forEach((edge) => graph.addLink(edge.source, edge.target, edge.value));
+            data.edges.forEach((edge) => {
+                if (edge.value > 0) {
+                    graph.addLink(edge.source, edge.target, edge.value);
+                }
+            });
 
             graphics = Viva.Graph.View.svgGraphics();
             //domLabels = generateDOMLabels(graph);
