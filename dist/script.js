@@ -5,7 +5,7 @@
         //Load the JSON
         let container = document.body;
 
-        $.getJSON('data/imdb1k.json', (data) => {
+        $.getJSON('data/imdb5k.json', (data) => {
 
             //Variable declaration
             let graphGenerator, graph, layout, graphics, renderer, domLabels;
@@ -38,9 +38,9 @@
 
             graphics.node((node) => {
                 let ui = Viva.Graph.svg('g'),
-                    svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.name);
+                    svgText = node.data.type === 'label'? Viva.Graph.svg('text').attr('y', '-4px').text(node.data.name):undefined;
 
-                ui.append(svgText);
+                if (svgText) ui.append(svgText);
                 $(ui).hover(function() { // mouse over
                     highlightRelatedNodes(node.id, true);
                 }, function() { // mouse out
