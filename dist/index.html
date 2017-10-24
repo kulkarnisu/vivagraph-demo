@@ -21,6 +21,9 @@
         color: black;
         z-index: 10;
     }
+    .text-size {
+        font-size: 30px
+    }
 </style>
 <body>
 <div class="data">
@@ -32,5 +35,30 @@
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
 <script src="script.js"></script>
+<text class="text-size">timer: </text><label id="seconds"  class="text-size">00</label><text class="text-size"> sec</text>
+    <script type="text/javascript">
+        var secondsLabel = document.getElementById("seconds");
+        var totalSeconds = 0;
+        setInterval(setTime, 1000);
+
+        function setTime()
+        {
+            ++totalSeconds;
+            secondsLabel.innerHTML = pad(totalSeconds%60);
+        }
+
+        function pad(val)
+        {
+            var valString = val + "";
+            if(valString.length < 2)
+            {
+                return "0" + valString;
+            }
+            else
+            {
+                return valString;
+            }
+        }
+    </script>
 </body>
 </html>
