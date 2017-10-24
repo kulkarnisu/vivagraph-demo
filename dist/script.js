@@ -5,7 +5,7 @@
         //Load the JSON
         let container = document.body;
 
-        $.getJSON('data/imdb5k.json', (data) => {
+        $.getJSON('data/imdb2k_p.json', (data) => {
 
             //Variable declaration
             let graphGenerator, graph, layout, graphics, renderer, domLabels;
