@@ -5,7 +5,7 @@
         //Load the JSON
         let container = document.body;
 
-        $.getJSON('data/imdb1k_p.json', (data) => {
+        $.getJSON('data/imdb5k_p.json', (data) => {
 
             //Variable declaration
             let graphGenerator, graph, layout, graphics, renderer, domLabels;
@@ -39,13 +39,7 @@
             graphics.node((node) => {
                 let nodeColor = node.data.type === 'feature' ? '#7836CF' : '#BF0A0A';
                 let nodeSize = node.data.type === 'label' ? 50 : 10;
-                // return  Viva.Graph.View.webglSquare(nodeSize, nodeColor);
-                var ui = Viva.Graph.View.webglSquare(nodeSize, nodeColor);
-                ui.addEventListener('click', function () {
-                    // toggle pinned mode
-                    layout.pinNode(node, !layout.isNodePinned(node));
-                });
-                return ui;
+                return  Viva.Graph.View.webglSquare(nodeSize, nodeColor);
             });
 
             layout = Viva.Graph.Layout.forceDirected(graph, {
